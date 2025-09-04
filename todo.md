@@ -19,12 +19,12 @@
 
 ### Tasks
 
-- [ ] Create new task without project
-- [ ] See tasks  
-- [ ] Create new task with project
-- [ ] Edit task
-- [ ] Edit task and remove associated project
-- [ ] Delete task
+- [x] Create new task without project
+- [x] See tasks  
+- [x] Create new task with project
+- [x] Edit task
+- [x] Edit task and remove associated project
+- [x] Delete task
 - [ ] Drag n drop task to re-order priority
 
 ---

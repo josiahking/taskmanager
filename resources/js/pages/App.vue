@@ -1,8 +1,15 @@
 <script setup>
-import Project from '@/Components/Project.vue';
+import Project from '@/components/Project.vue';
 import Tasks from '@/components/Tasks.vue';
+import { ref } from 'vue';
 
+function handleProjectSorting(projectId){
+  projectToShow.value = projectId;
+  showAllTasks.value = false;
+}
 
+const projectToShow = ref(null);
+const showAllTasks = ref(true);
 </script>
 
 <template>
@@ -12,13 +19,11 @@ import Tasks from '@/components/Tasks.vue';
 
   <div class="flex h-screen">
     <aside class="w-1/4 bg-gray-100 p-4">
-      <Project></Project>
+      <Project @project-to-sort="handleProjectSorting"></Project>
     </aside>
 
     <main class="flex-1 p-6">
-      <h1 class="mb-4 text-xl font-bold">Tasks</h1>
-      <Tasks></Tasks>
-      
+      <Tasks :tasksToShow="projectToShow" v-model:showAllTasks="showAllTasks"></Tasks>
     </main>
   </div>
 </template>

@@ -6,6 +6,7 @@ import {projects} from '@/stores/projectsStore';
 const project = ref('');
 const editingIndex = ref(null);
 const currentlyEditing = ref('');
+const emit = defineEmits(['project-to-sort']);
 
 function createProject() {
     projects.push({ name: project.value, id: projects.length + 1 });
@@ -19,7 +20,6 @@ function editProject(index, name) {
 
 function deleteProject(index) {
     projects.splice(index, 1);
-    console.log(projects)
 }
 
 function saveProject(index){
@@ -36,7 +36,13 @@ function cancelEditProject(){
     <div>
         <h2 class="mb-4 text-lg font-bold">Projects</h2>
         <ul class="divide-y divide-gray-300">
-            <li v-for="(project, idx) in projects" :key="idx" class="group flex p-4 transition-colors hover:cursor-pointer hover:bg-gray-300">
+            <li 
+                v-for="(project, idx) in projects" 
+                :data-project-id="project.id" 
+                :key="idx" 
+                class="group flex p-4 transition-colors hover:cursor-pointer hover:bg-gray-300"
+                @click="emit('project-to-sort', project.id)"
+            >
                 <div v-if="editingIndex != idx" class="flex w-full">
                     <span class="text-md font-medium text-gray-800 w-full">
                         {{ project.name }}

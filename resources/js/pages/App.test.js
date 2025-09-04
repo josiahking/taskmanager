@@ -2,37 +2,41 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 
 import App from '../Pages/App.vue';
+import Project from '@/components/Project.vue';
+import Tasks from '@/components/Tasks.vue';
 
 describe('App.vue', () => {
     it('renders the component', () => {
-        const wrapper = mount(App, {
-            props: { projects: [] }, // Pass empty projects list
-        });
+        const wrapper = mount(App);
         expect(wrapper.text()).toContain('Task Manager');
     });
 
-    // it('filters tasks when a project is clicked', async () => {
-    //     const wrapper = mount(App, {
-    //         data() {
-    //             return {
-    //                 projects: [
-    //                     { id: 1, name: 'Project A' },
-    //                     { id: 2, name: 'Project B' },
-    //                 ],
-    //                 tasks: [
-    //                     { id: 101, name: 'Task 1', projectId: 1 },
-    //                     { id: 102, name: 'Task 2', projectId: 2 },
-    //                 ],
-    //                 filteredTasks: [],
-    //             };
-    //         },
-    //     });
-
-    //     // Simulate clicking Project B
-    //     const projectButton = wrapper.find('[data-project-id="2"]');
-    //     await projectButton.trigger('click');
-
-    //     // Assert filtered tasks only include Project B's tasks
-    //     expect(wrapper.vm.filteredTasks).toEqual([{ id: 102, name: 'Task 2', projectId: 2 }]);
-    // });
+    it('can filter tasks when a project is clicked', async () => {
+        const wrapper = mount(App, {
+            data() {
+                return {
+                    projects: [
+                        { name: 'Estiquette Shop', id: 1 },
+                        { name: 'Alphabets and Numbers', id: 2 },
+                    ],
+                    tasks: [
+                        { id: 1, name: 'Task 1', project_id: 1, priority: 'high' },
+                        { id: 2, name: 'Task 2', project_id: 2, priority: 'medium' },
+                        { id: 3, name: 'Task 3', project_id: 1, priority: 'low' },
+                    ],
+                };
+            },
+        });
+        expect(wrapper.findComponent(Project).exists()).toBe(true);
+        expect(wrapper.findComponent(Tasks).exists()).toBe(true);
+        const projects = wrapper.vm.projects;
+        const tasks = wrapper.vm.tasks;
+        if (projects.length > 0 && tasks.length > 0) {
+            const projectButton = wrapper.find('[data-project-id="1"]');
+            await projectButton.trigger('click');
+            const tasksList = wrapper.findAll("[data-tasks-list]");
+            expect(tasksList.length).toBe(2);
+            expect(wrapper.find("[data-show-all]").isVisible()).toBe(true);
+        }
+    });
 });
