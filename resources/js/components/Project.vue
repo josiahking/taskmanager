@@ -1,12 +1,12 @@
 <script setup>
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import {projects} from '@/stores/projectsStore';
 
 const project = ref('');
 const editingIndex = ref(null);
 const currentlyEditing = ref('');
-const emit = defineEmits(['project-to-sort']);
+const emit = defineEmits(['project-to-sort','delete-project']);
 
 function createProject() {
     projects.push({ name: project.value, id: projects.length + 1 });
@@ -18,8 +18,9 @@ function editProject(index, name) {
     currentlyEditing.value = name;
 }
 
-function deleteProject(index) {
+function deleteProject(index, projectId) {
     projects.splice(index, 1);
+    emit('delete-project', projectId);
 }
 
 function saveProject(index){
@@ -30,6 +31,8 @@ function saveProject(index){
 function cancelEditProject(){
     editingIndex.value = null;
 }
+const activeProject = inject('activeProject');
+
 </script>
 
 <template>
@@ -41,6 +44,9 @@ function cancelEditProject(){
                 :data-project-id="project.id" 
                 :key="idx" 
                 class="group flex p-4 transition-colors hover:cursor-pointer hover:bg-gray-300"
+                :class="{
+                    'bg-red-200': project.id === activeProject
+                }"
                 @click="emit('project-to-sort', project.id)"
             >
                 <div v-if="editingIndex != idx" class="flex w-full">
@@ -49,7 +55,10 @@ function cancelEditProject(){
                     </span>
                     <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <PencilSquareIcon class="h-5 w-5 cursor-pointer edit text-blue-500 hover:text-blue-700" @click="editProject(idx, project.name)" />
-                        <TrashIcon class="h-5 w-5 cursor-pointer delete text-red-500 hover:text-red-700" @click="deleteProject(idx)" />
+                        <TrashIcon 
+                            class="h-5 w-5 cursor-pointer delete text-red-500 hover:text-red-700" 
+                            @click="deleteProject(idx,project.id)" 
+                        />
                     </div>
                 </div>
                 <div v-if="editingIndex == idx" class="flex w-full">

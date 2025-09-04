@@ -2,9 +2,12 @@
 import Modal from '@/components/Modal.vue';
 import { projects } from '@/stores/projectsStore';
 import { tasks } from '@/stores/tasksStore';
-import { PencilSquareIcon, TrashIcon, Bars3Icon } from '@heroicons/vue/24/solid';
-import { ref, computed } from 'vue';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
+import { Bars3Icon } from '@heroicons/vue/24/outline';
+import { ref, computed, watch } from 'vue';
+
 const emit = defineEmits(['update:showAllTasks']);
+
 function addTask() {
     showModal.value = true;
     editingTask.value = null;
@@ -39,6 +42,7 @@ function deleteTask(index) {
 function showAll() {
     emit('update:showAllTasks', true);
 }
+
 const showModal = ref(false);
 const taskName = ref('');
 const taskPriority = ref('Low');
@@ -47,7 +51,8 @@ const editingTask = ref(null);
 
 const props = defineProps({
     showAllTasks: { type: Boolean, default: true },
-    tasksToShow: Number
+    tasksToShow: Number,
+    projectDeleted: Number,
 });
 
 const filteredTasks = computed(() => {
@@ -56,6 +61,14 @@ const filteredTasks = computed(() => {
     }
     return tasks.filter(task => task.project_id == props.tasksToShow);
 });
+watch(() => props.projectDeleted, (newVal) => {
+        tasks.forEach((task) => {
+            if(task.project_id == newVal){
+                task.project_id = null;
+            }
+        });
+    }
+);
 </script>
 
 <template>
@@ -71,9 +84,10 @@ const filteredTasks = computed(() => {
         </div>
     </div>
 
-    <div class="tasks space-y-2">
+    <div class="tasks space-y-2 items-center">
         <div v-for="(t, idx) in filteredTasks" data-tasks-list :key="t.id" class="group flex justify-between rounded bg-gray-100 p-2 hover:bg-gray-200">
             <div class="flex flex-2 gap-2 items-center">
+                <Bars3Icon class="h-4 w-4 text-gray-400 cursor-move" />
                 <span class="w-1/2" data-task="{{ t.name }}">
                     {{ t.name }}
                 </span>
