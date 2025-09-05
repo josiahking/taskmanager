@@ -1,7 +1,7 @@
 <script setup>
 import Project from '@/components/Project.vue';
 import Tasks from '@/components/Tasks.vue';
-import { provide, ref } from 'vue';
+import { provide, reactive, ref } from 'vue';
 
 function handleProjectSorting(projectId){
   projectToShow.value = projectId;
@@ -19,6 +19,7 @@ function handleShowAllTask(){
 const projectToShow = ref(null);
 const showAllTasks = ref(true);
 const projectDeleted = ref(null);
+const tasks = reactive();
 provide('activeProject', projectToShow);
 </script>
 
@@ -41,6 +42,7 @@ provide('activeProject', projectToShow);
         v-model:showAllTasks="showAllTasks"
         :projectDeleted="projectDeleted"
         @update:showAllTasks="handleShowAllTask"
+        v-model:tasks="tasks"
       />
     </main>
   </div>

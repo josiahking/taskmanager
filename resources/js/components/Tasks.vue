@@ -2,11 +2,12 @@
 import Modal from '@/components/Modal.vue';
 import { projects } from '@/stores/projectsStore';
 import { tasks } from '@/stores/tasksStore';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { Bars3Icon } from '@heroicons/vue/24/outline';
-import { ref, computed, watch } from 'vue';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
+import { ref, watch } from 'vue';
+import draggable from 'vuedraggable';
 
-const emit = defineEmits(['update:showAllTasks']);
+const emit = defineEmits(['update:showAllTasks', 'update:tasks']);
 
 function addTask() {
     showModal.value = true;
@@ -21,6 +22,7 @@ function saveTask() {
     });
     setTimeout(resetForm, 100);
     showModal.value = false;
+    emit('update:tasks', tasks);
 }
 function resetForm() {
     taskName.value = '';
@@ -53,57 +55,84 @@ const props = defineProps({
     showAllTasks: { type: Boolean, default: true },
     tasksToShow: Number,
     projectDeleted: Number,
+    tasks: {
+        type: Array,
+        default: tasks,
+    }
 });
+const priorityLevels = ['urgent', 'high', 'medium', 'low', 'backlog'];
 
-const filteredTasks = computed(() => {
-    if(props.showAllTasks || props.tasksToShow == null){
-        return tasks;
-    }
-    return tasks.filter(task => task.project_id == props.tasksToShow);
+watch(props.projectDeleted, (newVal) => {
+    tasks.forEach((task) => {
+        if (task.project_id == newVal) {
+            task.project_id = null;
+        }
+    });
 });
-watch(() => props.projectDeleted, (newVal) => {
-        tasks.forEach((task) => {
-            if(task.project_id == newVal){
-                task.project_id = null;
-            }
-        });
-    }
-);
+const localTasks = ref([...props.tasks]);
+function shouldShow(task) {
+  return props.tasksToShow == null || task.project_id === props.tasksToShow;
+}
+watch(localTasks, () => {
+    updatePriorities();
+});
+function updatePriorities() {
+    const bucketSize = Math.ceil(localTasks.value.length / priorityLevels.length);
+
+    localTasks.value.forEach((task, index) => {
+    const bucketIndex = Math.floor(index / bucketSize);
+    task.priority = priorityLevels[bucketIndex] || 'low';
+    });
+    emit('update:tasks', localTasks.value);
+}
 </script>
 
 <template>
     <div class="group flex items-center justify-between">
-        <h1 class="mb-4 text-xl font-bold">Tasks </h1>
+        <h1 class="mb-4 text-xl font-bold">Tasks</h1>
         <div>
-            <button 
-                v-show="!props.showAllTasks" 
-                data-show-all 
-                @click="showAll" 
+            <button
+                v-show="!props.showAllTasks"
+                data-show-all
+                @click="showAll"
                 class="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
-            >Show All</button>
+            >
+                Show All
+            </button>
         </div>
     </div>
-
-    <div class="tasks space-y-2 items-center">
-        <div v-for="(t, idx) in filteredTasks" data-tasks-list :key="t.id" class="group flex justify-between rounded bg-gray-100 p-2 hover:bg-gray-200">
-            <div class="flex flex-2 gap-2 items-center">
-                <Bars3Icon class="h-4 w-4 text-gray-400 cursor-move" />
-                <span class="w-1/2" data-task="{{ t.name }}">
-                    {{ t.name }}
-                </span>
-                <span class="w-1/2" :class="t.priority === 'high' ? 'text-red-500' : t.priority === 'medium' ? 'text-yellow-500' : 'text-green-500'">
-                    {{ t.priority }}
-                </span>
-            </div>
-            <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                <button @click="editTask(idx)" class="edit text-red-500">
-                    <PencilSquareIcon class="edit h-4 w-5 cursor-pointer text-blue-500 hover:text-blue-700" />
-                </button>
-                <button class="delete" @click="deleteTask(idx)">
-                    <TrashIcon class="delete h-4 w-5 cursor-pointer text-red-500 hover:text-red-700" />
-                </button>
-            </div>
-        </div>
+    <div class="tasks items-center space-y-2">
+        <draggable
+            v-model="localTasks"
+            data-tasks-list
+            item-key="id"
+            handle=".drag-icon"
+        >
+            <template #item="{element, index}">
+                <div 
+                    v-if="shouldShow(element)"
+                    class="group flex justify-between rounded bg-gray-100 p-2 hover:bg-gray-200"
+                >
+                    <div class="flex flex-2 items-center gap-2">
+                        <Bars3Icon class="drag-icon h-4 w-4 cursor-move text-gray-400" />
+                        <span class="w-1/2" data-task="{{ element.name }}">
+                            {{ element.name }}
+                        </span>
+                        <span class="w-1/2" :class="element.priority === 'high' ? 'text-red-500' : element.priority === 'medium' ? 'text-yellow-500' : 'text-green-500'">
+                            {{ element.priority }}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                        <button @click="editTask(index)" class="edit text-red-500">
+                            <PencilSquareIcon class="edit h-4 w-5 cursor-pointer text-blue-500 hover:text-blue-700" />
+                        </button>
+                        <button class="delete" @click="deleteTask(index)">
+                            <TrashIcon class="delete h-4 w-5 cursor-pointer text-red-500 hover:text-red-700" />
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </draggable>
     </div>
     <button data-add-task @click="addTask" class="mt-4 rounded bg-blue-500 px-2 py-1 text-white">Add Task</button>
     <Teleport to="body">
