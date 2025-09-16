@@ -1,0 +1,104 @@
+<script setup>
+import Modal from '@/components/Modal.vue';
+import { useTaskStore } from '@/stores/TaskStore';
+import { ref } from 'vue';
+import { PRIORITY_LEVELS } from '@/utils/constants';
+
+const taskStore = useTaskStore();
+// props
+const props = defineProps({
+    projects: { type: Array },
+});
+
+// data
+const showModal = ref(false);
+const taskPriority = ref('Low');
+const taskProjectId = ref(null);
+const taskName = ref('');
+
+// methods
+function addTask() {
+    showModal.value = true;
+}
+function resetForm() {
+    taskName.value = '';
+    taskPriority.value = 'Low';
+    taskProjectId.value = null;
+}
+function saveTask() {
+    const task = {
+        name: taskName.value,
+        priority: taskPriority.value,
+        project_id: taskProjectId.value,
+    };
+    taskStore.saveTask(task);
+    setTimeout(resetForm, 100);
+    showModal.value = false;
+}
+
+</script>
+
+<template>
+    <button data-add-task @click="addTask" class="mt-4 rounded bg-blue-500 px-2 py-1 text-white">Add Task</button>
+    <Teleport to="body">
+        <Transition
+            enter-from-class="opacity-0"
+            enter-active-class="transition-opacity duration-300 ease-in-out"
+            leave-from-class="opacity-100"
+            leave-active-class="transition-opacity duration-200 ease-in-out"
+        >
+            <Modal :show="showModal" @close-modal="showModal = false" data-task-modal>
+                <template #header> Add New Task </template>
+                <form @submit.prevent id="add-task-form" class="mx-auto max-w-md space-y-6 rounded bg-white p-6 shadow-md">
+                    <!-- Task Input -->
+                    <div class="flex flex-col">
+                        <label for="task" class="mb-2 text-sm font-medium text-gray-700">Task</label>
+                        <input
+                            type="text"
+                            id="task"
+                            class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            placeholder="Enter task"
+                            v-model="taskName"
+                            required
+                        />
+                    </div>
+
+                    <!-- Priority Select -->
+                    <div class="flex flex-col">
+                        <label for="priority" class="mb-2 text-sm font-medium text-gray-700">Priority</label>
+                        <select
+                            id="priority"
+                            class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            v-model="taskPriority"
+                        >
+                            <option :value="priority" v-for="(priority, idx) in PRIORITY_LEVELS" :key="idx">{{ priority }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Project Select -->
+                    <div class="flex flex-col">
+                        <label for="project" class="mb-2 text-sm font-medium text-gray-700">Project</label>
+                        <select
+                            id="project"
+                            class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            v-model="taskProjectId"
+                        >
+                            <option v-for="project in props.projects" :key="project.id" :value="project.id">{{ project.name }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div>
+                        <button
+                            type="submit"
+                            class="w-full rounded bg-green-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+                            @click="saveTask"
+                        >
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </Modal>
+        </Transition>
+    </Teleport>
+</template>
