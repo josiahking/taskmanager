@@ -19,9 +19,6 @@ describe('tasks/TasksCreate.vue', () => {
                 stubs: {
                     Teleport: true,
                 },
-                provide: {
-                    priorityLevels: ['Low', 'Medium', 'High'],
-                },
             },
         });
     });
