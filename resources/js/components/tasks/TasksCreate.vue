@@ -50,7 +50,7 @@ function saveTask() {
             <Modal :show="showModal" @close-modal="showModal = false" data-task-modal>
                 <template #header> Add New Task </template>
                 <form @submit.prevent id="add-task-form" class="mx-auto max-w-md space-y-6 rounded bg-white p-6 shadow-md">
-                    <!-- Task Input -->
+
                     <div class="flex flex-col">
                         <label for="task" class="mb-2 text-sm font-medium text-gray-700">Task</label>
                         <input
@@ -63,7 +63,6 @@ function saveTask() {
                         />
                     </div>
 
-                    <!-- Priority Select -->
                     <div class="flex flex-col">
                         <label for="priority" class="mb-2 text-sm font-medium text-gray-700">Priority</label>
                         <select
@@ -75,7 +74,6 @@ function saveTask() {
                         </select>
                     </div>
 
-                    <!-- Project Select -->
                     <div class="flex flex-col">
                         <label for="project" class="mb-2 text-sm font-medium text-gray-700">Project</label>
                         <select
@@ -87,7 +85,6 @@ function saveTask() {
                         </select>
                     </div>
 
-                    <!-- Submit Button -->
                     <div>
                         <button
                             type="submit"

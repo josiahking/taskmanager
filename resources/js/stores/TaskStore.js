@@ -26,6 +26,9 @@ export const useTaskStore = defineStore('tasks', {
         },
         task(index){
             return this.tasks[index];
+        },
+        deleteTask(index) {
+            this.tasks.splice(index, 1);
         }
     },
     persist: true,

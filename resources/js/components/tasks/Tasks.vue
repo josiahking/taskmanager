@@ -29,9 +29,6 @@ function editTask(index) {
     showModal.value = true;
     editingTask.value = index;
 }
-function deleteTask(index) {
-    tasks.splice(index, 1);
-}
 
 function showAll() {
     emit('update:showAllTasks', true);
@@ -67,8 +64,7 @@ watch(props.projectDeleted, (newVal) => {
                     v-if="shouldShow(element)"
                     class="group flex items-center justify-between rounded-lg bg-white px-4 py-3 shadow-sm transition hover:bg-gray-50"
                 >
-                    <!-- Left Section: Drag Icon + Task Info -->
-                    <div class="flex w-full items-center gap-3">
+                    <div class="flex w-full items-center gap-3" data-task>
                         <Bars3Icon class="drag-icon h-5 w-5 cursor-move text-gray-400" />
 
                         <div class="flex w-full flex-col">
@@ -90,12 +86,11 @@ watch(props.projectDeleted, (newVal) => {
                         </div>
                     </div>
 
-                    <!-- Right Section: Action Buttons -->
                     <div class="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100 actions">
                         <button @click="editTask(index)" aria-label="Edit Task" class="edit">
                             <PencilSquareIcon class="h-5 w-5 text-blue-500 hover:text-blue-700" />
                         </button>
-                        <button @click="deleteTask(index)" aria-label="Delete Task" class="delete">
+                        <button @click="taskStore.deleteTask(index)" aria-label="Delete Task" class="delete">
                             <TrashIcon class="h-5 w-5 text-red-500 hover:text-red-700" />
                         </button>
                     </div>

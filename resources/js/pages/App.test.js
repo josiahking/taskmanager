@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import App from '../Pages/App.vue';
 import Project from '@/components/Project.vue';
-import Tasks from '@/components/Tasks.vue';
+import Tasks from '@/components/tasks/Tasks.vue';
 
 describe('App.vue', () => {
     it('renders the component', () => {
@@ -27,6 +27,7 @@ describe('App.vue', () => {
                 };
             },
         });
+
         expect(wrapper.findComponent(Project).exists()).toBe(true);
         expect(wrapper.findComponent(Tasks).exists()).toBe(true);
         const projects = wrapper.vm.projects;
