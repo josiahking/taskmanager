@@ -1,15 +1,21 @@
 <script setup>
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { inject, ref } from 'vue';
-import {projects} from '@/stores/projectsStore';
+import { useProjectStore } from '@/stores/ProjectStore';
 
+// define
+const projectStore = useProjectStore();
 const project = ref('');
 const editingIndex = ref(null);
 const currentlyEditing = ref('');
 const emit = defineEmits(['project-to-sort','delete-project']);
 
+// methods
 function createProject() {
-    projects.push({ name: project.value, id: projects.length + 1 });
+    if(!project.value){
+        return;
+    }
+    projectStore.saveProject({ name: project.value });
     project.value = '';
 }
 
@@ -19,31 +25,33 @@ function editProject(index, name) {
 }
 
 function deleteProject(index, projectId) {
-    projects.splice(index, 1);
+    projectStore.deleteProject(index);
     emit('delete-project', projectId);
 }
 
 function saveProject(index){
-    projects[index].name = currentlyEditing.value;
+    projectStore.saveEditProject(index, currentlyEditing.value);
     editingIndex.value = null;
 }
 
 function cancelEditProject(){
     editingIndex.value = null;
 }
+
+// inject
 const activeProject = inject('activeProject');
 
 </script>
 
 <template>
-    <div>
-        <h2 class="mb-4 text-lg font-bold">Projects</h2>
-        <ul class="divide-y divide-gray-300">
+    <div class="max-w-xl mx-auto">
+        <h2 class="mb-6 text-lg font-bold">Projects</h2>
+        <ul class="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white shadow-sm">
             <li 
-                v-for="(project, idx) in projects" 
+                v-for="(project, idx) in projectStore.projects" 
                 :data-project-id="project.id" 
                 :key="idx" 
-                class="group flex p-4 transition-colors hover:cursor-pointer hover:bg-gray-300"
+                class="group flex items-center justify-between p-4 transition-colors hover:cursor-pointer hover:bg-gray-200"
                 :class="{
                     'bg-red-200': project.id === activeProject
                 }"
@@ -74,14 +82,15 @@ const activeProject = inject('activeProject');
             </li>
         </ul>
     </div>
-    <form @submit.prevent="createProject">
-        <div class="mt-3 flex bg-white">
+    <form @submit.prevent="createProject" class="mt-6">
+        <div class="mt-3 rounded-lg flex bg-white shadow-sm">
             <input
                 type="text"
                 v-model="project"
                 class="w-full rounded-l border border-gray-300 p-2 focus:border-gray-300 focus:ring-1 focus:ring-gray-200 focus:outline-none"
+                placeholder="New project name"
             />
-            <button class="rounded-r bg-red-400 p-2 text-white">Create</button>
+            <button class="rounded-r bg-red-400 p-2 text-white hover:cursor-pointer">Create</button>
         </div>
     </form>
 </template>

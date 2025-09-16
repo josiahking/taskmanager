@@ -1,5 +1,4 @@
 <script setup>
-import { projects } from '@/stores/projectsStore';
 import { useTaskStore } from '@/stores/TaskStore';
 import { Bars3Icon } from '@heroicons/vue/24/outline';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
@@ -98,6 +97,6 @@ watch(props.projectDeleted, (newVal) => {
             </template>
         </draggable>
     </div>
-    <TasksCreate :projects="projects" />
-    <TasksEdit :showModal="showModal" :editingTask="editingTask" :projects="projects" @closeModal="showModal = false" />
+    <TasksCreate />
+    <TasksEdit :showModal="showModal" :editingTask="editingTask" @closeModal="showModal = false" />
 </template>

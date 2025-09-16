@@ -3,12 +3,13 @@ import Modal from '@/components/Modal.vue';
 import { useTaskStore } from '@/stores/TaskStore';
 import { ref } from 'vue';
 import { PRIORITY_LEVELS } from '@/utils/constants';
+import { useProjectStore } from '@/stores/ProjectStore';
 
+// define
 const taskStore = useTaskStore();
+const projectStore = useProjectStore();
+
 // props
-const props = defineProps({
-    projects: { type: Array },
-});
 
 // data
 const showModal = ref(false);
@@ -81,7 +82,7 @@ function saveTask() {
                             class="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             v-model="taskProjectId"
                         >
-                            <option v-for="project in props.projects" :key="project.id" :value="project.id">{{ project.name }}</option>
+                            <option v-for="project in projectStore.projects" :key="project.id" :value="project.id">{{ project.name }}</option>
                         </select>
                     </div>
 
