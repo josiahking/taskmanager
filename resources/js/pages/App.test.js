@@ -1,77 +1,61 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
-
+import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { createTestingPinia } from '@pinia/testing';
+import { useProjectStore } from '@/stores/ProjectStore';
 import App from '../Pages/App.vue';
 import Project from '@/components/Project.vue';
 import Tasks from '@/components/tasks/Tasks.vue';
+import { useTaskStore } from '@/stores/TaskStore';
+
+const pinia = createTestingPinia({
+  createSpy: vi.fn,
+  stubActions: true
+});
 
 describe('App.vue', () => {
+    let wrapper;
+    const taskStore = useTaskStore();
+    const projectStore = useProjectStore();
+
+    beforeEach(() => {
+        wrapper = mount(App, {
+            global: {
+                plugins: [pinia],
+            }
+        });
+        taskStore.$patch({
+            tasks: [
+                { id: 1, name: 'New Task 1', priority: 'High', project_id: 1 },
+                { id: 2, name: 'New Task 2', priority: 'High', project_id: 1 }
+            ]
+        });
+        projectStore.$patch({
+            projects: [{ id: 1, name: 'New Project' }]
+        });
+    });
+
     it('renders the component', () => {
-        const wrapper = mount(App);
         expect(wrapper.text()).toContain('Task Manager');
     });
 
     it('can filter tasks when a project is clicked', async () => {
-        const wrapper = mount(App, {
-            data() {
-                return {
-                    projects: [
-                        { name: 'Estiquette Shop', id: 1 },
-                        { name: 'Alphabets and Numbers', id: 2 },
-                    ],
-                    tasks: [
-                        { id: 1, name: 'Task 1', project_id: 1, priority: 'high' },
-                        { id: 2, name: 'Task 2', project_id: 2, priority: 'medium' },
-                        { id: 3, name: 'Task 3', project_id: 1, priority: 'low' },
-                    ],
-                };
-            },
-        });
-
+        
         expect(wrapper.findComponent(Project).exists()).toBe(true);
         expect(wrapper.findComponent(Tasks).exists()).toBe(true);
-        const projects = wrapper.vm.projects;
-        const tasks = wrapper.vm.tasks;
-        if (projects.length > 0 && tasks.length > 0) {
-            const projectButton = wrapper.find('[data-project-id="1"]');
-            await projectButton.trigger('click');
-            const tasksList = wrapper.findAll("[data-tasks-list]");
-            expect(tasksList.length).toBe(2);
-            expect(wrapper.find("[data-show-all]").isVisible()).toBe(true);
-        }
+        const projectButton = wrapper.find('ul li span.project');
+        await projectButton.trigger('click');
+        const tasksList = wrapper.findAll("[data-tasks-list]");
+        expect(tasksList.length).toBe(1);
+        expect(wrapper.find("[data-show-all]").isVisible()).toBe(true);
     });
 
     it("can delete project and unlink from tasks", async () => {
-        const wrapper = mount(App, {
-            data() {
-                return {
-                    projects: [
-                        { name: 'Estiquette Shop', id: 1 },
-                        { name: 'Alphabets and Numbers', id: 2 },
-                    ],
-                    tasks: [
-                        { id: 1, name: 'Task 1', project_id: 1, priority: 'high' },
-                        { id: 2, name: 'Task 2', project_id: 2, priority: 'medium' },
-                        { id: 3, name: 'Task 3', project_id: 1, priority: 'low' },
-                    ],
-                };
-            },
-        });
-        expect(wrapper.findComponent(Project).exists()).toBe(true);
-        expect(wrapper.findComponent(Tasks).exists()).toBe(true);
-        const projects = wrapper.vm.projects;
-        const tasks = wrapper.vm.tasks;
-        if (projects.length > 0 && tasks.length > 0) {
-            const projectDeleteButton = wrapper.find('[data-project-id="1"] .delete');
-            await projectDeleteButton.trigger('click');
-            setTimeout(() => {
-            expect(projects.length).toBe(1);
-            console.log(wrapper.vm.projects);
+        const projectDeleteButton = wrapper.find('[data-project-id="1"] .delete');
+        await projectDeleteButton.trigger('click');
+        setTimeout(() => {
             const tasksList = wrapper.findAll("[data-tasks-list]");
-            const projectIsLinkedToTask = tasks.some(task => task.project_id == 1);
-            console.log(projectIsLinkedToTask, tasksList);
+            const projectIsLinkedToTask = tasksList.some(task => task.project_id == 1);
             expect(projectIsLinkedToTask).toBe(false);
-            }, 1000);
-        }
+        }, 1000);
     });
 });

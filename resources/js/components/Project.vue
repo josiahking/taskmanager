@@ -29,7 +29,6 @@ function deleteProject(index, projectId) {
     projectStore.deleteProject(index);
     const taskStore = useTaskStore();
     taskStore.unlinkProject(projectId);
-    //emit('delete-project', projectId);
 }
 
 function saveProject(index){

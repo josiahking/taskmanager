@@ -42,7 +42,10 @@ function saveTask() {
 </script>
 
 <template>
-    <button data-add-task @click="addTask" class="mt-4 rounded bg-gray-800 px-2 py-1 text-white">Add Task</button>
+    <div class="mt-6">
+        <button data-add-task @click="addTask" class="rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-blue-600 "> + Add Task</button>
+    </div>
+
     <Teleport to="body">
         <Transition
             enter-from-class="opacity-0"

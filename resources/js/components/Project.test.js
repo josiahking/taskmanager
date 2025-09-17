@@ -23,8 +23,8 @@ describe('components/Project.vue', () => {
         },
       });
       projectStore.$patch({
-            projects: [{ id: 1, name: 'New Project' }]
-        });
+        projects: [{ id: 1, name: 'New Project' }]
+      });
     });
 
     it('adds a new project when form is submitted', async () => {

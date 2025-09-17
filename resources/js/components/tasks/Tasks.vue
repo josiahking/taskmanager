@@ -19,7 +19,6 @@ const taskList = ref(null);
 const props = defineProps({
     showAllTasks: { type: Boolean, default: true },
     tasksToShow: Number,
-    projectDeleted: Number,
 });
 
 // methods
