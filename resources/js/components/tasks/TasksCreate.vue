@@ -2,7 +2,7 @@
 import Modal from '@/components/Modal.vue';
 import { useTaskStore } from '@/stores/TaskStore';
 import { ref } from 'vue';
-import { PRIORITY_LEVELS } from '@/utils/constants';
+import { PRIORITY_LEVELS } from '@/utils/Constants';
 import { useProjectStore } from '@/stores/ProjectStore';
 
 // define
