@@ -29,6 +29,13 @@ export const useTaskStore = defineStore('tasks', {
         },
         deleteTask(index) {
             this.tasks.splice(index, 1);
+        },
+        unlinkProject(projectId) {
+            this.tasks.forEach(task => {
+                if (task.project_id == projectId) {
+                    task.project_id = null;
+                }
+            });
         }
     },
     persist: true,

@@ -8,6 +8,7 @@ import { useProjectStore } from '@/stores/ProjectStore';
 // define
 const taskStore = useTaskStore();
 const projectStore = useProjectStore();
+const emit = defineEmits(['taskCreated']);
 
 // props
 
@@ -35,12 +36,13 @@ function saveTask() {
     taskStore.saveTask(task);
     setTimeout(resetForm, 100);
     showModal.value = false;
+    emit('taskCreated');
 }
 
 </script>
 
 <template>
-    <button data-add-task @click="addTask" class="mt-4 rounded bg-blue-500 px-2 py-1 text-white">Add Task</button>
+    <button data-add-task @click="addTask" class="mt-4 rounded bg-gray-800 px-2 py-1 text-white">Add Task</button>
     <Teleport to="body">
         <Transition
             enter-from-class="opacity-0"

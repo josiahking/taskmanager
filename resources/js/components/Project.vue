@@ -2,6 +2,7 @@
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { inject, ref } from 'vue';
 import { useProjectStore } from '@/stores/ProjectStore';
+import { useTaskStore } from '@/stores/TaskStore';
 
 // define
 const projectStore = useProjectStore();
@@ -26,7 +27,9 @@ function editProject(index, name) {
 
 function deleteProject(index, projectId) {
     projectStore.deleteProject(index);
-    emit('delete-project', projectId);
+    const taskStore = useTaskStore();
+    taskStore.unlinkProject(projectId);
+    //emit('delete-project', projectId);
 }
 
 function saveProject(index){
@@ -46,7 +49,12 @@ const activeProject = inject('activeProject');
 <template>
     <div class="max-w-xl mx-auto">
         <h2 class="mb-6 text-lg font-bold">Projects</h2>
-        <ul class="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white shadow-sm">
+        <ul 
+            class="divide-y rounded-lg bg-white"
+            :class="{
+                'shadow-sm border border-gray-200 divide-gray-200': projectStore.projects.length > 0
+            }"
+        >
             <li 
                 v-for="(project, idx) in projectStore.projects" 
                 :data-project-id="project.id" 
