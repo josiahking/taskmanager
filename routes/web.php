@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\TaskManagerController;
 
-Route::get('/', function () {
-    return Inertia::render('App');
-})->name('app');
+Route::get('/', TaskManagerController::class)->name('app');
