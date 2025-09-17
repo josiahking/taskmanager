@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { PRIORITY_LEVELS } from '@/utils/constants';
+import { PRIORITY_LEVELS } from '@/utils/Constants';
 
 export const useTaskStore = defineStore('tasks', {
     state() {
