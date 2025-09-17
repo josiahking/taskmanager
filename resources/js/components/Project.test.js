@@ -1,80 +1,73 @@
 import Project from '@/components/Project.vue';
 import { mount } from '@vue/test-utils';
 import { beforeEach } from 'node:test';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { createTestingPinia } from '@pinia/testing';
+import { useProjectStore } from '@/stores/ProjectStore';
 
-function setupProject(wrapper, name = null) {
-    const input = wrapper.find('input');
-    return input.setValue(name).then(() => {
-        return wrapper.find('form').trigger('submit.prevent');
-    });
-}
+const pinia = createTestingPinia({
+  createSpy: vi.fn,
+  stubActions: true
+});
 
 describe('components/Project.vue', () => {
     let wrapper;
-
+    const projectStore = useProjectStore();
     beforeEach(() => {
       wrapper = mount(Project, {
         global: {
           plugins: [pinia],
-          stubs: {
-            Teleport: true,
-          },
+          provide: {
+            activeProject: null,
+          }
         },
       });
+      projectStore.$patch({
+            projects: [{ id: 1, name: 'New Project' }]
+        });
     });
 
     it('adds a new project when form is submitted', async () => {
-        await setupProject(wrapper, 'New Project 1');
-        
-        expect(projectStore.saveProject).toHaveBeenCalled();
-        // const projectNames = wrapper.findAll('ul li span').map((span) => span.text());
-        // expect(projectNames).toContain('New Project');
-        // expect(wrapper.vm.project).toBe('');
+      const input = wrapper.find('input');
+      input.setValue('New Project 2');
+      wrapper.find('form').trigger('submit.prevent');
+      expect(projectStore.saveProject).toHaveBeenCalled();
+      setTimeout(() => {
+        const projectNames = wrapper.findAll('ul li span.project').map((span) => span.text());
+        expect(projectNames).toContain('New Project 2');
+        expect(projectStore.projects).toHaveLength(2);
+      }, 1000);
     });
 
-    // it('can delete existing project', async () => {
-    //     const wrapper = mount(Project);
-    //     wrapper.vm.projects.length = 0;
-    //     expect(wrapper.vm.projects).toEqual([]);
-    //     await setupProject(wrapper, 'Project To Delete');
-    //     const deleteButton = wrapper.find('ul li svg.delete');
-    //     await deleteButton.trigger('click');
+    it('can delete existing project', async () => {
+        const deleteButton = wrapper.find('ul li .actions svg.delete');
+        await deleteButton.trigger('click');
+        expect(projectStore.deleteProject).toHaveBeenCalled();
+        setTimeout(() => expect(wrapper.find('ul li').text()).not.toContain('New Project'), 500);
+    });
 
-    //     expect(wrapper.text()).not.toContain('Project To Delete');
-    // });
+    it('can edit existing project', async () => {
+      const editButton = wrapper.find('ul li .actions svg.edit');
+      await editButton.trigger('click');
 
-    // it('can edit existing project', async () => {
-    //     const wrapper = mount(Project);
-    //     wrapper.vm.projects.length = 0;
-    //     await setupProject(wrapper, 'Edit Project');
+      const editInput = wrapper.find('ul li input');
+      await editInput.setValue('Updated Project');
+      const saveButton = wrapper.find('ul li button.save');
+      await saveButton.trigger('click');
 
-    //     const editButton = wrapper.find('ul li svg.edit');
-    //     await editButton.trigger('click');
+      expect(projectStore.saveEditProject).toHaveBeenCalled();
+    });
 
-    //     const editInput = wrapper.find('ul li input');
-    //     await editInput.setValue('Updated Project');
-    //     const saveButton = wrapper.find('ul li button.save');
-    //     await saveButton.trigger('click');
+    it('can cancel a project during editing', async () => {
+        const editButton = wrapper.find('ul li svg.edit');
+        await editButton.trigger('click');
 
-    //     expect(wrapper.text()).toContain('Updated Project');
-    //     expect(wrapper.text()).not.toContain('Edit Project');
-    // });
+        const editInput = wrapper.find('ul li input');
+        await editInput.setValue('Updated Project');
+        const saveButton = wrapper.find('ul li button.cancel');
+        await saveButton.trigger('click');
 
-    // it('can cancel a project during editing', async () => {
-    //     const wrapper = mount(Project);
-    //     wrapper.vm.projects.length = 0;
-    //     await setupProject(wrapper, 'Edit Project');
-
-    //     const editButton = wrapper.find('ul li svg.edit');
-    //     await editButton.trigger('click');
-
-    //     const editInput = wrapper.find('ul li input');
-    //     await editInput.setValue('Updated Project');
-    //     const saveButton = wrapper.find('ul li button.cancel');
-    //     await saveButton.trigger('click');
-
-    //     expect(wrapper.text()).toContain('Edit Project');
-    //     expect(wrapper.text()).not.toContain('Updated Project');
-    // });
+        expect(wrapper.text()).toContain('New Project');
+        expect(wrapper.text()).not.toContain('Updated Project');
+    });
 });

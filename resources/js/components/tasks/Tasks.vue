@@ -33,7 +33,8 @@ function showAll() {
     emit('update:showAllTasks', true);
 }
 // watch
-watch(props.projectDeleted, (newVal) => {
+watch(() => props.projectDeleted, (newVal) => {
+    alert(newVal)
     tasks.forEach((task) => {
         if (task.project_id == newVal) {
             task.project_id = null;

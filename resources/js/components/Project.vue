@@ -58,10 +58,10 @@ const activeProject = inject('activeProject');
                 @click="emit('project-to-sort', project.id)"
             >
                 <div v-if="editingIndex != idx" class="flex w-full">
-                    <span class="text-md font-medium text-gray-800 w-full">
+                    <span class="text-md font-medium text-gray-800 w-full project">
                         {{ project.name }}
                     </span>
-                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity actions">
                         <PencilSquareIcon class="h-5 w-5 cursor-pointer edit text-blue-500 hover:text-blue-700" @click="editProject(idx, project.name)" />
                         <TrashIcon 
                             class="h-5 w-5 cursor-pointer delete text-red-500 hover:text-red-700" 
