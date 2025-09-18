@@ -32,6 +32,11 @@ class ProjectService
         return $this->projectRepository->create($data) ? true : false;
     }
 
+    public function updateProject(array $data): bool
+    {
+        return $this->projectRepository->update($data);
+    }
+
     public function deleteProject(int $id): bool
     {
         $project = $this->projectRepository->one($id);

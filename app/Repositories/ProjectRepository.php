@@ -23,6 +23,13 @@ class ProjectRepository implements ProjectInterface
         return Project::create($data);
     }
 
+    public function update(array $data): bool
+    {
+        return Project::where('id', $data["id"])->update([
+            "name" => $data["name"],
+        ]);
+    }
+
     public function delete(Collection $project): bool
     {
         return $project->delete();

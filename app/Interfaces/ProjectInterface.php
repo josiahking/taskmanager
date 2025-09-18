@@ -36,6 +36,14 @@ interface ProjectInterface
     public function create(array $data): Project;
 
     /**
+     * Update project with provided data
+     * 
+     * @param array $data The data to update the project
+     * @return bool
+     */
+    public function update(array $data): bool;
+
+    /**
      * Delete the specified project.
      *
      * @param \Illuminate\Database\Eloquent\Collection $project The project instance to be deleted.

@@ -30,6 +30,11 @@ class TaskService
         return $this->taskRepository->create($data) ? true : false;
     }
 
+    public function updateTask(array $data): bool
+    {
+        return $this->taskRepository->update($data);
+    }
+
     public function deleteTask(int $id): bool
     {
         $task = $this->taskRepository->one($id);

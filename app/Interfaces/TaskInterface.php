@@ -36,6 +36,13 @@ interface TaskInterface
     public function create(array $data): Task;
 
     /**
+     * Update the Task with the provided data
+     * 
+     * @param array $data The data to update the task
+     * @return bool Return true if the task was updated, false otherwise
+     */
+    public function update(array $data): bool;
+    /**
      * Delete specified task
      * @param Task $task The task instance to be deleted.
      * @return bool Returns true if the task was successfully deleted, false otherwise.
