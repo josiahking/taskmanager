@@ -10,7 +10,7 @@ class TaskRepository implements TaskInterface
 {
     public function all(): array
     {
-        return Task::all()->toArray();
+        return Task::orderBy('order','asc')->get()->toArray();
     }
 
     public function one(int $id): Collection

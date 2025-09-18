@@ -3,11 +3,15 @@ import Project from '@/components/Project.vue';
 import Tasks from '@/components/tasks/Tasks.vue';
 import { provide, computed, ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { useTaskStore } from '@/stores/TaskStore';
+import { useProjectStore } from '@/stores/ProjectStore';
 
 // define
 const projectToShow = ref(null);
 const showAllTasks = ref(true);
 const page = usePage();
+const taskStore = useTaskStore();
+const projectStore = useProjectStore();
 
 // methods
 function handleProjectSorting(projectId) {
@@ -25,7 +29,9 @@ provide('activeProject', projectToShow);
 // computed
 const tasks = computed(() => page.props.tasks);
 const projects = computed(() => page.props.projects);
-console.log(tasks, projects)
+taskStore.setTasks(tasks.value);
+projectStore.setProjects(projects.value);
+
 </script>
 
 <template>

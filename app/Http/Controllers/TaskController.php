@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Services\TaskService;
+use Illuminate\Http\RedirectResponse;
 
 class TaskController extends Controller
 {
@@ -21,32 +22,43 @@ class TaskController extends Controller
         ]);
     }
 
-    public function store(StoreTaskRequest $request)
+    public function store(StoreTaskRequest $request): RedirectResponse
     {
         $validated = $request->validated();
         $response = $this->taskService->createTask($validated);
-        $statusCode = $response === true ? 200 : 422;
-        return response([
-            "message" => $response === true ? "Successful creating task" : "Failed to create task",
-        ], $statusCode);
+        if(!$response){
+            redirect()->back()->withErrors([
+                "message" => "Failed to create task",
+            ]);
+        }
+        return redirect()->back()->with([
+            "message" => "Successful creating task",
+        ]);
     }
 
-    public function update(UpdateTaskRequest $request)
+    public function update(UpdateTaskRequest $request): RedirectResponse
     {
         $validated = $request->validated();
         $response = $this->taskService->updateTask($validated);
-        $statusCode = $response === true ? 200 : 422;
-        return response([
-            "message" => $response === true ? "Successful updating task" : "Failed to update task",
-        ], $statusCode);
+        if(!$response){
+            return redirect()->back()->withErrors([
+                "message" => "Failed to update task",
+            ]);
+        }
+        return redirect()->back()->with([
+            "message" => "Successful updating task",
+        ]);
     }
 
-    public function delete(int $id)
+    public function delete(int $id): RedirectResponse
     {
         $response = $this->taskService->deleteTask($id);
-        if(!$response){
-            return response([], 422);
+        if (! $response) {
+            return redirect()->back()->withErrors([
+                'message' => 'Failed to delete task.'
+            ]);
         }
-        return response([], 204);
+
+        return redirect()->back()->with('message', 'Task deleted successfully.');
     }
 }

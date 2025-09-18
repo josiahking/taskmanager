@@ -4,12 +4,14 @@ import { useTaskStore } from '@/stores/TaskStore';
 import { reactive, watch } from 'vue';
 import { PRIORITY_LEVELS } from '@/utils/Constants';
 import { useProjectStore } from '@/stores/ProjectStore';
+import { useToast } from 'vue-toastification';
 
 // define
 const taskStore = useTaskStore();
 let task = reactive({});
 const emit = defineEmits(['closeModal']);
 const projectStore = useProjectStore();
+const toast = useToast();
 
 // props
 const props = defineProps({
@@ -22,7 +24,11 @@ function resetForm() {
     task = {};
 }
 function saveTask() {
-    taskStore.saveEditTask(task);
+    if(task.name == ""){
+        toast.error("Task name is required!");
+        return;
+    }
+    taskStore.saveEditTask(props.editingTask, task);
     setTimeout(resetForm, 100);
     closeModal();
 }

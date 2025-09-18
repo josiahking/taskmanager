@@ -41,8 +41,7 @@ it('can create project', function () {
     $response = $this->post('/projects/store', [
         'name' => "Project B",
     ]);
-    $response->assertOk();
-    $response->assertJson([
+    $response->assertSessionHas([
         'message' => "Successful creating project",
     ]);
     $this->assertDatabaseHas('projects', ["name" => "Project B"]);
@@ -54,16 +53,14 @@ it('can update project', function () {
         "id" => $project->id,
         'name' => "Project B",
     ]);
-    $response->assertOk();
-    $response->assertJson([
+    $response->assertSessionHas([
         'message' => "Successful updating project",
     ]);
 });
 
 it('can delete project', function () {
     $project = Project::factory()->create(['name' => 'Project A']);
-    $response = $this->delete("/projects/delete/{$project->id}");
-    $response->assertStatus(204);
+    $this->delete("/projects/delete/{$project->id}");
     $this->assertDatabaseMissing('projects', ['id' => $project->id]);
 });
 
@@ -82,15 +79,16 @@ it('return all tasks', function () {
             ->where('tasks.0.project_id', 1);
     });
 });
+
 $data = [
     "name" => "Second Task",
     'project_id' => null,
     'priority' => 'High',
 ];
+
 it('can create task', function () use ($data){
     $response = $this->post('/tasks/store', $data);
-    $response->assertOk();
-    $response->assertJson([
+    $response->assertSessionHas([
         'message' => "Successful creating task",
     ]);
     $this->assertDatabaseHas('tasks', $data);
@@ -102,15 +100,13 @@ it('can update task', function () use ($data) {
         "id" => $task->id,
         "order" => 2,
     ]);
-    $response->assertOk();
-    $response->assertJson([
+    $response->assertSessionHas([
         'message' => "Successful updating task",
     ]);
 });
 
 it('can delete task', function () use ($data) {
     $task = Task::factory()->create($data);
-    $response = $this->delete("/tasks/delete/{$task->id}");
-    $response->assertStatus(204);
+    $this->delete("/tasks/delete/{$task->id}");
     $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
 });

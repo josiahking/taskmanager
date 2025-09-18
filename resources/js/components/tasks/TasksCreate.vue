@@ -4,13 +4,13 @@ import { useTaskStore } from '@/stores/TaskStore';
 import { ref } from 'vue';
 import { PRIORITY_LEVELS } from '@/utils/Constants';
 import { useProjectStore } from '@/stores/ProjectStore';
+import { useToast } from 'vue-toastification';
 
 // define
 const taskStore = useTaskStore();
 const projectStore = useProjectStore();
 const emit = defineEmits(['taskCreated']);
-
-// props
+const toast = useToast();
 
 // data
 const showModal = ref(false);
@@ -28,6 +28,10 @@ function resetForm() {
     taskProjectId.value = null;
 }
 function saveTask() {
+    if(taskName.value == ""){
+        toast.error("Task name is required!");
+        return;
+    }
     const task = {
         name: taskName.value,
         priority: taskPriority.value,
@@ -42,7 +46,7 @@ function saveTask() {
 </script>
 
 <template>
-    <div class="mt-6">
+    <div class="my-6">
         <button data-add-task @click="addTask" class="rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-blue-600 "> + Add Task</button>
     </div>
 
