@@ -39,8 +39,7 @@ class ProjectService
 
     public function deleteProject(int $id): bool
     {
-        $project = $this->projectRepository->one($id);
-        return $this->projectRepository->delete($project);
+        return $this->projectRepository->delete($id);
     }
 
 }

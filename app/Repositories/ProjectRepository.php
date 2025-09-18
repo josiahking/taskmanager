@@ -30,8 +30,8 @@ class ProjectRepository implements ProjectInterface
         ]);
     }
 
-    public function delete(Collection $project): bool
+    public function delete(int $id): bool
     {
-        return $project->delete();
+        return Project::where('id', $id)->delete();
     }
 }

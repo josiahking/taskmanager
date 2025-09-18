@@ -37,7 +37,6 @@ class TaskService
 
     public function deleteTask(int $id): bool
     {
-        $task = $this->taskRepository->one($id);
-        return $this->taskRepository->delete($task);
+        return $this->taskRepository->delete($id);
     }
 }

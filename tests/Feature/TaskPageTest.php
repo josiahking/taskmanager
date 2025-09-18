@@ -17,11 +17,100 @@ it('renders the task index page with tasks grouped by project', function () {
 
     $response = $this->get('/');
 
-    $response->assertInertia(fn (AssertableInertia $page) =>
+    $response->assertInertia(
+        fn(AssertableInertia $page) =>
         $page->component('App')
             ->has('projects', 1)
             ->where('projects.0.name', 'Project A')
             ->has('tasks', 1)
             ->where('tasks.0.name', 'First Task')
     );
+});
+
+it('return all projects', function () {
+    Project::factory()->create(['name' => 'Project A']);
+    $response = $this->get('/projects');
+    $this->assertArrayHasKey('projects', $response->json());
+    $response->assertJson(function ($json) {
+        $json->has('projects.0')
+            ->where('projects.0.name', 'Project A');
+    });
+});
+
+it('can create project', function () {
+    $response = $this->post('/projects/store', [
+        'name' => "Project B",
+    ]);
+    $response->assertOk();
+    $response->assertJson([
+        'message' => "Successful creating project",
+    ]);
+    $this->assertDatabaseHas('projects', ["name" => "Project B"]);
+});
+
+it('can update project', function () {
+    $project = Project::factory()->create(['name' => 'Project A']);
+    $response = $this->put('/projects/update', [
+        "id" => $project->id,
+        'name' => "Project B",
+    ]);
+    $response->assertOk();
+    $response->assertJson([
+        'message' => "Successful updating project",
+    ]);
+});
+
+it('can delete project', function () {
+    $project = Project::factory()->create(['name' => 'Project A']);
+    $response = $this->delete("/projects/delete/{$project->id}");
+    $response->assertStatus(204);
+    $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+});
+
+it('return all tasks', function () {
+    $project = Project::factory()->create(['name' => 'Project A']);
+    Task::factory()->create([
+        'project_id' => $project->id,
+        'name' => 'First Task',
+        'priority' => 'High'
+    ]);
+    $response = $this->get('/tasks');
+    $this->assertArrayHasKey('tasks', $response->json());
+    $response->assertJson(function ($json) {
+        $json->has('tasks.0')
+            ->where('tasks.0.name', 'First Task')
+            ->where('tasks.0.project_id', 1);
+    });
+});
+$data = [
+    "name" => "Second Task",
+    'project_id' => null,
+    'priority' => 'High',
+];
+it('can create task', function () use ($data){
+    $response = $this->post('/tasks/store', $data);
+    $response->assertOk();
+    $response->assertJson([
+        'message' => "Successful creating task",
+    ]);
+    $this->assertDatabaseHas('tasks', $data);
+});
+
+it('can update task', function () use ($data) {
+    $task = Task::factory()->create($data);
+    $response = $this->put('/tasks/update', [
+        "id" => $task->id,
+        "order" => 2,
+    ]);
+    $response->assertOk();
+    $response->assertJson([
+        'message' => "Successful updating task",
+    ]);
+});
+
+it('can delete task', function () use ($data) {
+    $task = Task::factory()->create($data);
+    $response = $this->delete("/tasks/delete/{$task->id}");
+    $response->assertStatus(204);
+    $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
 });

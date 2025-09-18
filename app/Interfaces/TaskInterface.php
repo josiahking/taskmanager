@@ -44,8 +44,8 @@ interface TaskInterface
     public function update(array $data): bool;
     /**
      * Delete specified task
-     * @param Task $task The task instance to be deleted.
+     * @param int $id The ID of task to be deleted.
      * @return bool Returns true if the task was successfully deleted, false otherwise.
      */
-    public function delete(Collection $task): bool;
+    public function delete(int $id): bool;
 }

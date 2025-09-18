@@ -25,8 +25,8 @@ class UpdateTaskRequest extends FormRequest
     {
         return [
             "id" => ["required", "integer"],
-            "name" => ["required", "string", "max:255"],
-            "priority" => ["required", new Enum(PriorityEnum::class)],
+            "name" => ["sometimes", "required", "string", "max:255"],
+            "priority" => ["sometimes", "required", new Enum(PriorityEnum::class)],
             "project_id" => "sometimes|nullable|integer",
             "order" => "sometimes|integer",
         ];

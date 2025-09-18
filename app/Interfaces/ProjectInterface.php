@@ -46,8 +46,8 @@ interface ProjectInterface
     /**
      * Delete the specified project.
      *
-     * @param \Illuminate\Database\Eloquent\Collection $project The project instance to be deleted.
+     * @param int $id The project instance to be deleted.
      * @return bool Returns true if the project was successfully deleted, false otherwise.
      */
-    public function delete(Collection $project): bool;
+    public function delete(int $id): bool;
 }

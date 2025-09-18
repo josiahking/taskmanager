@@ -41,7 +41,7 @@ class ProjectController extends Controller
         ], $statusCode);
     }
 
-    public function destroy(int $id)
+    public function delete(int $id)
     {
         $response = $this->projectService->deleteProject($id);
         if(!$response){
