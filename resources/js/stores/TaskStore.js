@@ -110,7 +110,6 @@ export const useTaskStore = defineStore('tasks', {
             if (typeof data != 'object') {
                 return;
             }
-            console.log(data)
             this.tasks = data;
         },
     },
