@@ -84,16 +84,33 @@ export const useTaskStore = defineStore('tasks', {
             });
         },
         unlinkProject(projectId) {
+            const tasksToUnlink = [];
             this.tasks.forEach((task) => {
                 if (task.project_id == projectId) {
                     task.project_id = null;
+                    tasksToUnlink.push(task.id);
                 }
             });
+            if(tasksToUnlink.length > 0){
+                const form = useForm({
+                    tasks: tasksToUnlink,
+                    project_id: projectId
+                });
+                form.put(route('tasks.unlinkproject'), {
+                    preserveScroll: true,
+                    onError: (error) => {
+                        for(let err in error){
+                            toast.error(error[err]);
+                        }
+                    },
+                });
+            }
         },
         setTasks(data) {
             if (typeof data != 'object') {
                 return;
             }
+            console.log(data)
             this.tasks = data;
         },
     },

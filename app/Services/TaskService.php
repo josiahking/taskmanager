@@ -2,17 +2,20 @@
 
 namespace App\Services;
 
+use App\Repositories\ProjectRepository;
 use App\Repositories\TaskRepository;
 
 class TaskService
 {
     protected TaskRepository $taskRepository;
+    protected ProjectRepository $projectRepository;
     /**
      * Create a new class instance.
      */
-    public function __construct(TaskRepository $tasks)
+    public function __construct(TaskRepository $tasks, ProjectRepository $projects)
     {
         $this->taskRepository = $tasks;
+        $this->projectRepository = $projects;
     }
 
     public function listTasks(): array
@@ -38,5 +41,16 @@ class TaskService
     public function deleteTask(int $id): bool
     {
         return $this->taskRepository->delete($id);
+    }
+
+    public function unlinkProject(array $data): bool
+    {
+        if($data["project_id"]){
+            $project = $this->projectRepository->exists($data["project_id"]);
+            if(!$project){
+                return $this->taskRepository->unlinkProject($data["tasks"]);
+            }
+        }
+        return false;
     }
 }

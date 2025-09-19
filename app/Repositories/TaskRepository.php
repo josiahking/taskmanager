@@ -34,4 +34,9 @@ class TaskRepository implements TaskInterface
     {
         return Task::where("id", $id)->delete();
     }
+
+    public function unlinkProject(array $tasksId)
+    {
+        return Task::whereIn('id', $tasksId)->update(['project_id' => null]);
+    }
 }

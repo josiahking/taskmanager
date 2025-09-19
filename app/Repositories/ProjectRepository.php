@@ -34,4 +34,9 @@ class ProjectRepository implements ProjectInterface
     {
         return Project::where('id', $id)->delete();
     }
+
+    public function exists(int $id): bool
+    {
+        return Project::where('id', $id)->exists();
+    }
 }

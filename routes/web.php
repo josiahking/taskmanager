@@ -16,3 +16,4 @@ Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
 Route::post('/tasks/store', [TaskController::class, 'store'])->name('tasks.store');
 Route::put('/tasks/update', [TaskController::class, 'update'])->name('tasks.update');
 Route::delete('/tasks/delete/{id}', [TaskController::class, 'delete'])->name('tasks.destroy');
+Route::put('/tasks/unlinkproject', [TaskController::class, 'unlinkProject'])->name('tasks.unlinkproject');

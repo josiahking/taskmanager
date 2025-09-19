@@ -110,3 +110,18 @@ it('can delete task', function () use ($data) {
     $this->delete("/tasks/delete/{$task->id}");
     $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
 });
+
+it("can unlink task from project", function(){
+    $project = Project::factory()->create(['name' => 'Project A']);
+    $tasks = Task::factory()->count(5)->create();
+    $taskIds = $tasks->pluck('id')->toArray();
+    $this->delete("/projects/delete/{$project->id}");
+    $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+    $this->put("/tasks/unlinkproject", [
+        "project_id" => $project->id,
+        "tasks" => $taskIds,
+    ]);
+    foreach($taskIds as $task){
+        $this->assertDatabaseMissing('tasks', ['id', $task, 'project_id' => null]);
+    }
+});

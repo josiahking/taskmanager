@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UnlinkProjectRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Services\TaskService;
 use Illuminate\Http\RedirectResponse;
@@ -60,5 +61,19 @@ class TaskController extends Controller
         }
 
         return redirect()->back()->with('message', 'Task deleted successfully.');
+    }
+
+    public function unlinkProject(UnlinkProjectRequest $request): RedirectResponse
+    {
+        $validated = $request->validated();
+        $response = $this->taskService->unlinkProject($validated);
+        if(!$response){
+            return redirect()->back()->withErrors([
+                "message" => "Failed to unlink task from project",
+            ]);
+        }
+        return redirect()->back()->with([
+            "message" => "Successful unlinking project",
+        ]);
     }
 }
