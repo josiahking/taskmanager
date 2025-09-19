@@ -27,8 +27,8 @@ function handleShowAllTask() {
 provide('activeProject', projectToShow);
 
 // computed
-const tasks = computed(() => page.props.tasks);
-const projects = computed(() => page.props.projects);
+const tasks = computed(() => page.props?.tasks || []);
+const projects = computed(() => page.props?.projects || []);
 taskStore.setTasks(tasks.value);
 projectStore.setProjects(projects.value);
 
