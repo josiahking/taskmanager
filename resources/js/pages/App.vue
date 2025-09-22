@@ -2,9 +2,10 @@
 import Project from '@/components/Project.vue';
 import Tasks from '@/components/tasks/Tasks.vue';
 import { provide, computed, ref } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Head } from '@inertiajs/vue3';
 import { useTaskStore } from '@/stores/TaskStore';
 import { useProjectStore } from '@/stores/ProjectStore';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 // define
 const projectToShow = ref(null);
@@ -35,26 +36,24 @@ projectStore.setProjects(projects.value);
 </script>
 
 <template>
-  <div class="flex h-20 items-center justify-between bg-gray-100 px-6 shadow-sm">
-    <div class="flex items-center gap-3">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h6v6h5v2H4v-2h5z" />
-      </svg>
 
-      <h2 class="text-2xl font-semibold text-gray-800">Task Manager</h2>
+  <Head title="Dashboard" />
+  <AuthenticatedLayout>
+    <template #header>
+      <h2 class="text-xl font-semibold leading-tight text-gray-800">
+        Task Manager
+      </h2>
+    </template>
+
+    <div class="flex h-screen">
+      <aside class="w-1/4 bg-gray-100 p-4">
+        <Project @project-to-sort="handleProjectSorting" />
+      </aside>
+
+      <main class="flex-1 p-6">
+        <Tasks :tasksToShow="projectToShow" v-model:showAllTasks="showAllTasks"
+          @update:showAllTasks="handleShowAllTask" />
+      </main>
     </div>
-  </div>
-
-  <div class="flex h-screen">
-    <aside class="w-1/4 bg-gray-100 p-4">
-      <Project @project-to-sort="handleProjectSorting" />
-    </aside>
-
-    <main class="flex-1 p-6">
-      <Tasks :tasksToShow="projectToShow" v-model:showAllTasks="showAllTasks"
-        @update:showAllTasks="handleShowAllTask" />
-    </main>
-  </div>
+  </AuthenticatedLayout>
 </template>

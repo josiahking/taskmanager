@@ -25,9 +25,10 @@
 - [x] Edit task
 - [x] Edit task and remove associated project
 - [x] Delete task
-- [ ] Drag n drop task to re-order priority
+- [x] Drag n drop task to re-order priority
 
 ---
 
-- [ ] Task can be mark as completed  
-- [ ] See completed task by the side  
+- [x] Add web auth 
+- [ ] Add API auth
+- [ ] Add graphQL  
