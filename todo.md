@@ -29,6 +29,7 @@
 
 ---
 
-- [x] Add web auth 
-- [ ] Add API auth
-- [ ] Add graphQL  
+- [x] Add web auth
+- [ ] Setup docker
+- [ ] Add graphQL
+- [ ] Add Auth for API
