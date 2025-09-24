@@ -14,7 +14,7 @@ export const useTaskStore = defineStore('tasks', {
     },
     actions: {
         saveTask(task) {
-            const index = this.tasks.length - 1;
+            const index = this.tasks.length > 1 ? this.tasks.length - 1 : 0;
             task.order = index;
             const form = useForm(task);
             form.post(route('tasks.store'), {
