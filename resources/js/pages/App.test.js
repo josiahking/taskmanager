@@ -1,15 +1,15 @@
-import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { createTestingPinia } from '@pinia/testing';
 import { useProjectStore } from '@/stores/ProjectStore';
-import App from '../Pages/App.vue';
+import { useTaskStore } from '@/stores/TaskStore';
+import { createTestingPinia } from '@pinia/testing';
+import { mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import App from './App.vue';
 import Project from '@/components/Project.vue';
 import Tasks from '@/components/tasks/Tasks.vue';
-import { useTaskStore } from '@/stores/TaskStore';
 
 const pinia = createTestingPinia({
-  createSpy: vi.fn,
-  stubActions: true
+    createSpy: vi.fn,
+    stubActions: true,
 });
 
 describe('App.vue', () => {
@@ -21,16 +21,16 @@ describe('App.vue', () => {
         wrapper = mount(App, {
             global: {
                 plugins: [pinia],
-            }
+            },
         });
         taskStore.$patch({
             tasks: [
                 { id: 1, name: 'New Task 1', priority: 'High', project_id: 1 },
-                { id: 2, name: 'New Task 2', priority: 'High', project_id: 1 }
-            ]
+                { id: 2, name: 'New Task 2', priority: 'High', project_id: 1 },
+            ],
         });
         projectStore.$patch({
-            projects: [{ id: 1, name: 'New Project' }]
+            projects: [{ id: 1, name: 'New Project' }],
         });
     });
 
@@ -39,7 +39,7 @@ describe('App.vue', () => {
     });
 
     it('can filter tasks when a project is clicked', async () => {
-        
+
         expect(wrapper.findComponent(Project).exists()).toBe(true);
         expect(wrapper.findComponent(Tasks).exists()).toBe(true);
         const projectButton = wrapper.find('ul li span.project');

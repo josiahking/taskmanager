@@ -1,5 +1,5 @@
 <script setup>
-import Modal from '@/components/Modal.vue';
+import Modal from './TasksModal.vue';
 import { useTaskStore } from '@/stores/TaskStore';
 import { ref } from 'vue';
 import { PRIORITY_LEVELS } from '@/utils/Constants';

@@ -1,9 +1,10 @@
 <?php
 
-use App\Models\Project;
 use App\Models\Task;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
+use App\Models\Project;
 use Inertia\Testing\AssertableInertia;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -14,8 +15,11 @@ it('renders the task index page with tasks grouped by project', function () {
         'name' => 'First Task',
         'priority' => 'High'
     ]);
+    $user = User::factory()->create();
 
-    $response = $this->get('/');
+    $response = $this
+        ->actingAs($user)
+        ->get('/app');
 
     $response->assertInertia(
         fn(AssertableInertia $page) =>
@@ -29,7 +33,9 @@ it('renders the task index page with tasks grouped by project', function () {
 
 it('return all projects', function () {
     Project::factory()->create(['name' => 'Project A']);
-    $response = $this->get('/projects');
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get('/projects');
     $this->assertArrayHasKey('projects', $response->json());
     $response->assertJson(function ($json) {
         $json->has('projects.0')
@@ -38,7 +44,8 @@ it('return all projects', function () {
 });
 
 it('can create project', function () {
-    $response = $this->post('/projects/store', [
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)->post('/projects/store', [
         'name' => "Project B",
     ]);
     $response->assertSessionHas([
@@ -48,8 +55,9 @@ it('can create project', function () {
 });
 
 it('can update project', function () {
+    $user = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Project A']);
-    $response = $this->put('/projects/update', [
+    $response = $this->actingAs($user)->put('/projects/update', [
         "id" => $project->id,
         'name' => "Project B",
     ]);
@@ -60,18 +68,20 @@ it('can update project', function () {
 
 it('can delete project', function () {
     $project = Project::factory()->create(['name' => 'Project A']);
-    $this->delete("/projects/delete/{$project->id}");
+    $user = User::factory()->create();
+    $this->actingAs($user)->delete("/projects/delete/{$project->id}");
     $this->assertDatabaseMissing('projects', ['id' => $project->id]);
 });
 
 it('return all tasks', function () {
     $project = Project::factory()->create(['name' => 'Project A']);
+    $user = User::factory()->create();
     Task::factory()->create([
         'project_id' => $project->id,
         'name' => 'First Task',
         'priority' => 'High'
     ]);
-    $response = $this->get('/tasks');
+    $response = $this->actingAs($user)->get('/tasks');
     $this->assertArrayHasKey('tasks', $response->json());
     $response->assertJson(function ($json) {
         $json->has('tasks.0')
@@ -87,7 +97,8 @@ $data = [
 ];
 
 it('can create task', function () use ($data){
-    $response = $this->post('/tasks/store', $data);
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)->post('/tasks/store', $data);
     $response->assertSessionHas([
         'message' => "Successful creating task",
     ]);
@@ -96,7 +107,8 @@ it('can create task', function () use ($data){
 
 it('can update task', function () use ($data) {
     $task = Task::factory()->create($data);
-    $response = $this->put('/tasks/update', [
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)->put('/tasks/update', [
         "id" => $task->id,
         "order" => 2,
     ]);
@@ -107,15 +119,17 @@ it('can update task', function () use ($data) {
 
 it('can delete task', function () use ($data) {
     $task = Task::factory()->create($data);
-    $this->delete("/tasks/delete/{$task->id}");
+    $user = User::factory()->create();
+    $this->actingAs($user)->delete("/tasks/delete/{$task->id}");
     $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
 });
 
 it("can unlink task from project", function(){
     $project = Project::factory()->create(['name' => 'Project A']);
     $tasks = Task::factory()->count(5)->create();
+    $user = User::factory()->create();
     $taskIds = $tasks->pluck('id')->toArray();
-    $this->delete("/projects/delete/{$project->id}");
+    $this->actingAs($user)->delete("/projects/delete/{$project->id}");
     $this->assertDatabaseMissing('projects', ['id' => $project->id]);
     $this->put("/tasks/unlinkproject", [
         "project_id" => $project->id,
