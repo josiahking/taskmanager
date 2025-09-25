@@ -31,6 +31,9 @@ jobs:
       - name: Start Sail
         run: ./vendor/bin/sail up -d
 
+      - name: NPM Install
+        run: ./vendor/bin/sail npm install
+
       - name: Generate Application Key
         run: ./vendor/bin/sail php artisan key:generate
 
