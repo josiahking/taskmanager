@@ -75,14 +75,21 @@ return [
     'schemas' => [
         'default' => [
             'query' => [
-                // ExampleQuery::class,
+                'users' => App\GraphQL\Queries\UsersQuery::class,
+                'user' => App\GraphQL\Queries\UserQuery::class,
+                'project' => App\GraphQL\Queries\ProjectQuery::class,
+                'projects' => App\GraphQL\Queries\ProjectsQuery::class,
+                'task' => App\GraphQL\Queries\TaskQuery::class,
+                'tasks' => App\GraphQL\Queries\TasksQuery::class,
             ],
             'mutation' => [
                 // ExampleMutation::class,
             ],
             // The types only available in this schema
             'types' => [
-                // ExampleType::class,
+                'User' => App\GraphQL\Types\UserType::class,
+                'Project' => App\GraphQL\Types\ProjectType::class,
+                'Task' => App\GraphQL\Types\TaskType::class,
             ],
 
             // Laravel HTTP middleware
