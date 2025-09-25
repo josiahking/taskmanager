@@ -21,13 +21,18 @@ jobs:
           echo "DB_USERNAME=sail" >> .env
           echo "DB_PASSWORD=password" >> .env
           echo "DB_DATABASE=laravel" >> .env
-          ./vendor/bin/sail up -d
 
       - name: Wait for MySQL
         run: sleep 15
 
       - name: Install Composer Dependencies
-        run: ./vendor/bin/sail composer install --no-interaction --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Start Sail
+        run: ./vendor/bin/sail up -d
+
+      - name: NPM Install
+        run: ./vendor/bin/sail npm install
 
       - name: Generate Application Key
         run: ./vendor/bin/sail php artisan key:generate
@@ -39,4 +44,4 @@ jobs:
         run: ./vendor/bin/sail npm run build
 
       - name: Run Tests
-        run: ./vendor/bin/sail pest
+        run: ./vendor/bin/sail artisan test
