@@ -2,9 +2,15 @@
 
 ## Guest can
 
+- [x] See landing page
+- [x] Registration page
+- [x] Login page
+
+## User can
+
 - [x] See dashboard  
-- [ ] When project is deleted unlink all the task(s) associated with the project  
-- [ ] Clicking a project can sort tasks
+- [x] When project is deleted unlink all the task(s) associated with the project  
+- [x] Clicking a project can sort tasks
 
 ---
 
