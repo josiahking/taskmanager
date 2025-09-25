@@ -44,4 +44,4 @@ jobs:
         run: ./vendor/bin/sail npm run build
 
       - name: Run Tests
-        run: ./vendor/bin/sail pest
+        run: ./vendor/bin/sail artisan test
