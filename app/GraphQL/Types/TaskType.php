@@ -37,7 +37,7 @@ class TaskType extends GraphQLType
             'order' => [
                 'type' => Type::nonNull(Type::int()),
                 'description' => 'Task order',
-            ]
+            ],
         ];
     }
 }

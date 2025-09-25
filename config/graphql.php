@@ -83,7 +83,8 @@ return [
                 'tasks' => App\GraphQL\Queries\TasksQuery::class,
             ],
             'mutation' => [
-                // ExampleMutation::class,
+                'createProject' => App\GraphQL\Mutations\CreateProjectMutation::class,
+                'createTask' => App\GraphQL\Mutations\CreateTaskMutation::class,
             ],
             // The types only available in this schema
             'types' => [
