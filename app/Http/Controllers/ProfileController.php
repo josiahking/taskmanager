@@ -60,4 +60,14 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    /**
+     * Generate personal access token.
+     */
+    public function generateToken(Request $request)
+    {
+        $token = $request->user()->createToken('web')->plainTextToken;
+
+        return back()->with('token', $token);
+    }
 }
