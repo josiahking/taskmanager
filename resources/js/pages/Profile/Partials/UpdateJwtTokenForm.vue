@@ -1,6 +1,4 @@
 <script setup>
-import InputError from '@/components/InputError.vue';
-import InputLabel from '@/components/InputLabel.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import TextInput from '@/components/TextInput.vue';
 import { router, usePage } from '@inertiajs/vue3';
@@ -9,7 +7,9 @@ import { ref } from 'vue';
 const token = ref('');
 const loading = ref(false);
 const success = ref(false);
-token.value = usePage().props.token;
+if(usePage().props.token != undefined){
+    token.value = usePage().props.token;
+}
 
 const generateToken = () => {
     loading.value = true

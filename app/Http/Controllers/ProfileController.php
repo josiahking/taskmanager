@@ -17,12 +17,11 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request, TokenService $tokenService): Response
+    public function edit(Request $request): Response
     {
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
-            'token' => $tokenService->getUserToken($request->user()->id),
         ]);
     }
 
@@ -69,6 +68,6 @@ class ProfileController extends Controller
     public function generateToken(Request $request, TokenService $tokenService): RedirectResponse
     {
         $token = $tokenService->generateToken($request->user());
-        return back()->with('message', "Token generated successfully.");
+        return back()->with('token', $token);
     }
 }
