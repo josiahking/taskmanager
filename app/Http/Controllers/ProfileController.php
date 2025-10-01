@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Services\TokenService;
 
 class ProfileController extends Controller
 {
@@ -59,5 +60,14 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Generate personal access token.
+     */
+    public function generateToken(Request $request, TokenService $tokenService): RedirectResponse
+    {
+        $token = $tokenService->generateToken($request->user());
+        return back()->with('token', $token);
     }
 }
