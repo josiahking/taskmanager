@@ -9,9 +9,7 @@ import { ref } from 'vue';
 const token = ref('');
 const loading = ref(false);
 const success = ref(false);
-const user = usePage().props.auth.user;
-
-console.log(user)
+token.value = usePage().props.token;
 
 const generateToken = () => {
     loading.value = true
@@ -26,8 +24,17 @@ const generateToken = () => {
         onFinish: () => {
             loading.value = false
         },
-    })
+    });
 }
+
+async function copyToken() {
+    if (navigator.clipboard) {
+        await navigator.clipboard.writeText(token.value);
+    } else {
+        console.error('Clipboard API not supported');
+    }
+}
+
 </script>
 
 <template>
@@ -41,6 +48,18 @@ const generateToken = () => {
 
         <form @submit.prevent="generateToken" class="mt-6 space-y-6">
             <div>
+
+                <div v-if="token" class="my-4">
+                    <div class="flex items-center space-x-2">
+                        <TextInput id="token" type="text" class="mt-1 block w-full bg-gray-100 text-gray-800"
+                            v-model="token" readonly />
+                        <button type="button" @click="copyToken"
+                            class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
                 <PrimaryButton :disabled="loading">Generate Token</PrimaryButton>
 
                 <p v-if="success" class="text-sm text-green-600 mt-2">
@@ -48,10 +67,6 @@ const generateToken = () => {
                 </p>
             </div>
 
-            <div v-if="token" class="mt-4">
-                <InputLabel for="token" value="Your Token" />
-                <TextInput id="token" type="text" class="mt-1 block w-full bg-gray-100" :value="token" readonly />
-            </div>
         </form>
     </section>
 

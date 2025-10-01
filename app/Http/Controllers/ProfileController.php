@@ -10,17 +10,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Services\TokenService;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request, TokenService $tokenService): Response
     {
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'token' => $tokenService->getUserToken($request->user()->id),
         ]);
     }
 
@@ -64,10 +66,9 @@ class ProfileController extends Controller
     /**
      * Generate personal access token.
      */
-    public function generateToken(Request $request)
+    public function generateToken(Request $request, TokenService $tokenService): RedirectResponse
     {
-        $token = $request->user()->createToken('web')->plainTextToken;
-
-        return back()->with('token', $token);
+        $token = $tokenService->generateToken($request->user());
+        return back()->with('message', "Token generated successfully.");
     }
 }
