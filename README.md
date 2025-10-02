@@ -1,4 +1,7 @@
+
 # Task Manager
+
+[![CI](https://github.com/josiahking/taskmanager/actions/workflows/ci.yml/badge.svg)](https://github.com/josiahking/taskmanager/actions)
 
 A Laravel + Inertia.js + Vite + Pinia project for managing tasks and projects. This application allows users to create, update, delete, and organize tasks under different projects, with priorities and ordering.
 
@@ -11,6 +14,9 @@ A Laravel + Inertia.js + Vite + Pinia project for managing tasks and projects. T
 - State management with Pinia (Vue.js)
 - PHPUnit and Pest feature tests
 
+- GraphQL API support
+- Personal Access Token authentication (Sanctum)
+
 ## Tech Stack
 - Laravel (PHP backend)
 - Inertia.js (SPA bridge)
@@ -18,6 +24,8 @@ A Laravel + Inertia.js + Vite + Pinia project for managing tasks and projects. T
 - Vue.js (frontend framework)
 - Pinia (state management)
 - Pest & PHPUnit (testing)
+- GraphQL
+- Sanctum
 
 ## Getting Started
 
@@ -88,9 +96,14 @@ A Laravel + Inertia.js + Vite + Pinia project for managing tasks and projects. T
 - `/tasks/update` - Update task
 - `/tasks/delete/{id}` - Delete task
 - `/tasks/unlinkproject` - Unlink tasks from project
+- `/graphiql` - GraphQL UI for authenticated users
 
 ## Contributing
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+
+## Live Demo
+Test the app here: [https://josiah-taskmanager.nue.dom.my.id/](https://josiah-taskmanager.nue.dom.my.id/)
 
 ## License
 This project is open source and available under the MIT License.
