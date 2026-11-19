@@ -7,6 +7,34 @@ A full-stack task and project management application built with Laravel, Inertia
 
 The application supports authenticated project and task workflows, task prioritisation and ordering, GraphQL queries and mutations, personal access tokens, automated tests, and continuous integration.
 
+## Engineering highlights
+
+Task Manager demonstrates the design and delivery of a **full-stack Laravel application** with a Vue-powered interface, authenticated APIs, and automated quality checks. It combines conventional web workflows with GraphQL rather than relying on a single API style.
+
+- **Full-stack architecture:** Laravel 12 handles backend workflows, while Inertia.js, Vue 3, and TypeScript deliver the application interface.
+- **Separated responsibilities:** Controllers, services, repositories, Eloquent models, GraphQL resolvers, and frontend stores have distinct roles in the codebase.
+- **Authenticated API access:** Laravel Sanctum protects the GraphQL endpoint, while Laravel Breeze and email verification secure web application routes.
+- **Project and task workflows:** Users can manage projects, create and prioritize tasks, reorder them, and link or unlink tasks from projects.
+- **Frontend state management:** Pinia supports client-side application state alongside server-driven Inertia pages.
+- **Test and quality tooling:** Pest/PHPUnit and Vitest cover backend and frontend behavior; GitHub Actions runs test and code-quality workflows, supported by Pint, ESLint, and Prettier.
+- **Reproducible development:** Laravel Sail and Docker support local setup with MySQL.
+
+### Application flow
+
+```mermaid
+flowchart TD
+    User[Authenticated user] --> UI[Vue 3 / Inertia.js interface]
+    UI --> Web[Laravel web routes and controllers]
+    UI --> GraphQL[Sanctum-protected GraphQL API]
+    Web --> Services[Application services and repositories]
+    GraphQL --> Services
+    Services --> Models[Eloquent models]
+    Models --> DB[(MySQL)]
+    UI --> State[Pinia state]
+```
+
+**What this project demonstrates:** The ability to structure an end-to-end Laravel/Vue product, secure multiple access paths, organize application concerns, and maintain backend and frontend quality checks. See the [architecture](#architecture), [GraphQL API](#graphql-api), and [testing](#testing) sections for implementation details.
+
 ## Live Demo
 
 [Open the Task Manager demo](https://josiah-taskmanager.nue.dom.my.id/)
