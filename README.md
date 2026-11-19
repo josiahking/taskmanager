@@ -35,12 +35,6 @@ flowchart TD
 
 **What this project demonstrates:** The ability to structure an end-to-end Laravel/Vue product, secure multiple access paths, organize application concerns, and maintain backend and frontend quality checks. See the [architecture](#architecture), [GraphQL API](#graphql-api), and [testing](#testing) sections for implementation details.
 
-## Live Demo
-
-[Open the Task Manager demo](https://josiah-taskmanager.nue.dom.my.id/)
-
-> The demo is hosted on a free DOM Cloud subdomain, which may display a third-party safety notice before opening the application.
-
 ## Features
 
 ### Project Management
